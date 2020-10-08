@@ -27,25 +27,28 @@ namespace Infrastructure.LinkedIn.IntegrationTest
         [Fact, Priority(-10)]
         public async Task Should_GetLinkedInOauthAccessToken_When_UserLoginInteractively()
         {
-            var userLoginWaiter = new AutoResetEvent(false);
-            var oAuthCodeStore = new OAuthCodeStore(userLoginWaiter);
+            var interactiveUserLoginWaiter = new AutoResetEvent(false);
+            var oAuthCodeStore = new OAuthCodeStore(interactiveUserLoginWaiter);
+            const int thirtyDaysInSeconds = 30 * 24 * 60 * 60;
 
             var webServerCancellationToken = StartWebServerForCallbackRequestInBackground(oAuthCodeStore);
 
             OpenUrlInBrowser(_linkedInSettings.LinkedInAuthUrl);
 
-            userLoginWaiter.WaitOne();
+            interactiveUserLoginWaiter.WaitOne();
             
-            var accessToken = await ExchangeOauthCodeForAccessToken(oAuthCodeStore.Code);
+            var linkedInToken = await ExchangeOauthCodeForAccessToken(oAuthCodeStore.Code);
 
-            Assert.NotEmpty(accessToken);
+            Assert.NotEmpty(linkedInToken.access_token);
+            Assert.True(linkedInToken.expires_in > thirtyDaysInSeconds, 
+                "We expect the expire time of the access token to be more than 30 days");
             
-            await _linkedInSettings.SaveAccessToken(accessToken);
+            await _linkedInSettings.SaveAccessToken(linkedInToken.access_token);
             
             webServerCancellationToken.Cancel();
         }
 
-        private async Task<string> ExchangeOauthCodeForAccessToken(string linkedInOauthCode)
+        private async Task<LinkedInToken> ExchangeOauthCodeForAccessToken(string linkedInOauthCode)
         {
             var client = new HttpClient
             {
@@ -67,9 +70,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             var response = await client.SendAsync(request);
 
             var linkedInJsonToken = await response.Content.ReadAsStringAsync();
-            var linkedInToken = JsonConvert.DeserializeObject<LinkedInToken>(linkedInJsonToken);
-
-            return linkedInToken.access_token;
+            return JsonConvert.DeserializeObject<LinkedInToken>(linkedInJsonToken);
         }
 
         private static void OpenUrlInBrowser(string url)
