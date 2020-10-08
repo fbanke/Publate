@@ -12,6 +12,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     {
         private const string AccessTokenFilePath = "accesstoken.txt";
         private const string MeIdFilePath = "meid.txt";
+        public int CharacterLimitOnPosts = 1300;
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
 
