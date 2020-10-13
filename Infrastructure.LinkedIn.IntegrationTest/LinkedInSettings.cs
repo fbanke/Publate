@@ -12,7 +12,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     {
         private const string AccessTokenFilePath = "accesstoken.txt";
         private const string MeIdFilePath = "meid.txt";
-        public int CharacterLimitOnPosts = 1300;
+        public readonly int CharacterLimitOnPosts = 1300;
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
 
@@ -52,19 +52,22 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             await File.WriteAllTextAsync(AccessTokenFilePath, accessToken);
         }
         
-        public string GetAccessToken()
+        public static string GetAccessToken()
         {
             return File.ReadAllText(AccessTokenFilePath);
         }
 
-        public static async Task SaveMeId(string meId)
+        public static async Task SaveMeId(Urn meId)
         {
-            await File.WriteAllTextAsync(MeIdFilePath, meId);
+            await File.WriteAllTextAsync(MeIdFilePath, meId.ToString());
         }
         
         public HttpClient CreateApiClient()
         {
-            var client = new HttpClient {BaseAddress = new Uri("https://api.linkedin.com")};
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri("https://api.linkedin.com")
+            };
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", GetAccessToken());
             client.DefaultRequestHeaders.Add("X-Restli-Protocol-Version", "2.0.0");
@@ -72,9 +75,9 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             return client;
         }
 
-        public string GetMeId()
+        public static Urn GetMeId()
         {
-            return File.ReadAllText(MeIdFilePath);
+            return new Urn(File.ReadAllText(MeIdFilePath)); 
         }
     }
 }

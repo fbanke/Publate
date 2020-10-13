@@ -12,44 +12,58 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     public class CreatePost
     {
         private readonly LinkedInSettings _linkedInSettings;
+        private readonly PostJsonSerializationService _serializationService;
 
         public CreatePost()
         {
             _linkedInSettings = LinkedInSettings.Create();
+            _serializationService = new PostJsonSerializationService();
         }
         
-        [Fact, Priority(-8)]
+        [Fact(Skip = "Can only be run manually"), Priority(-8)]
         public async Task Should_CreatePost_When_SubmittingValidPost()
         {
-            var postCreated = await CreateLinkedInPost("This is a test post from the publate.com API project");
+            const string postText = "This is a test post from the publate.com API project";
+            var post = new Post(
+                LinkedInSettings.GetMeId(),
+                new ContentState(ContentState.LifecycleState.Published),
+                new ShareContent(new Message(postText), new MediaType(MediaType.Type.None)),
+                new Visibility(Visibility.Reach.Public)
+            );
+            
+            var postCreated = await CreateLinkedInPost(post);
             Assert.NotEmpty(postCreated.id);
         }
         
-        [Fact, Priority(-8)]
+        [Fact(Skip = "Can only be run manually"), Priority(-8)]
         public async Task Should_GiveThrowException_When_PostingToLargeMessage()
         {
             var toLongPostText = new string('*', _linkedInSettings.CharacterLimitOnPosts + 1);
+            
+            var post = new Post(
+                LinkedInSettings.GetMeId(),
+                new ContentState(ContentState.LifecycleState.Published),
+                new ShareContent(new Message(toLongPostText), new MediaType(MediaType.Type.None)),
+                new Visibility(Visibility.Reach.Public)
+            );
 
-            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await CreateLinkedInPost(toLongPostText));
+            var json = _serializationService.Serialize(post);
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await CreateLinkedInPost(post));
             Assert.Contains("exceeded the maximum allowed", exception.Message);
         }
         
-        private async Task<PostCreateResponse> CreateLinkedInPost(string postText)
+        private async Task<PostCreateResponse> CreateLinkedInPost(Post post)
         {
             var client = _linkedInSettings.CreateApiClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "/v2/ugcPosts")
             {
-                Content = new StringContent(
-                    "{\"author\": \"" + _linkedInSettings.GetMeId() +
-                    "\",\"lifecycleState\": \"PUBLISHED\",\"specificContent\": {\"com.linkedin.ugc.ShareContent\": {\"shareCommentary\": {\"text\": \"" +
-                    postText +
-                    "\"},\"shareMediaCategory\": \"NONE\"}},\"visibility\": {\"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"}}")
+                Content = new StringContent(_serializationService.Serialize(post))
             };
 
             var response = await client.SendAsync(request);
 
             var postCreateJson = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.Created)
             {
                 var postCreated = JsonConvert.DeserializeObject<PostCreateResponse>(postCreateJson);
                 return postCreated;

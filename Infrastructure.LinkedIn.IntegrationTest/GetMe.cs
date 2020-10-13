@@ -15,13 +15,14 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             _linkedInSettings = LinkedInSettings.Create();
         }
         
-        [Fact, Priority(-9)]
+        [Fact(Skip = "Can only be run manually"), Priority(-9)]
         public async Task Should_GetLinkedInMeObject_When_AccessTokenIsValid()
         {
             var me = await RequestMeDataFromLinkedIn();
             
             Assert.NotEmpty(me.id);
-            await LinkedInSettings.SaveMeId("urn:li:person:" + me.id);
+            var meId = new Urn("li", "person", me.id);
+            await LinkedInSettings.SaveMeId(meId);
         }
         
         private async Task<Me> RequestMeDataFromLinkedIn()

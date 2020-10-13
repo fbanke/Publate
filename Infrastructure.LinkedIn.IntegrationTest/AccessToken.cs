@@ -24,8 +24,8 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             _linkedInSettings = LinkedInSettings.Create();
         }
         
-        [Fact, Priority(-10)]
-        public async Task Should_GetLinkedInOauthAccessToken_When_UserLoginInteractively()
+        [Fact(Skip = "Can only be run manually"), Priority(-10)]
+        public async Task Should_GetAndStoreLinkedInOauthAccessToken_When_UserLoginInteractively()
         {
             var interactiveUserLoginWaiter = new AutoResetEvent(false);
             var oAuthCodeStore = new OAuthCodeStore(interactiveUserLoginWaiter);
