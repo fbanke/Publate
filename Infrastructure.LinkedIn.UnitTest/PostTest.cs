@@ -4,6 +4,12 @@ namespace Infrastructure.LinkedIn.UnitTest
 {
     public class PostTest
     {
+        private readonly PostFactory _factory;
+
+        public PostTest()
+        {
+            _factory = new PostFactory();
+        }
         [Fact]
         public void Should_SerializeJsonAccordingToSpec_When_GivenPost()
         {
@@ -11,26 +17,23 @@ namespace Infrastructure.LinkedIn.UnitTest
             const string postText = "post text";
             
             var author = new Urn(authorUrn);
-            var state = new ContentState(ContentState.LifecycleState.Published);
-            var mediaCategory = new MediaType(MediaType.Type.None);
-            var visibility = new Visibility(Visibility.Reach.Public);
-            
-            var post = new Post(author, state, new ShareContent(new Message(postText), mediaCategory),visibility);
+
+            var post = _factory.CreatePublicPublishedTextPost(author, postText);
 
             var serializer = new PostJsonSerializationService();
             
             Assert.Equal(
                 "{" +
                     "\"author\":\""+authorUrn+"\"," +
-                    "\"lifecycleState\":\""+state+"\"," +
+                    "\"lifecycleState\":\""+post.LifecycleState+"\"," +
                     "\"specificContent\":{" +
                         "\"com.linkedin.ugc.ShareContent\":{" +
                             "\"shareCommentary\":{\"text\":\""+postText+"\"}," +
-                            "\"shareMediaCategory\":\""+mediaCategory+"\"" +
+                            "\"shareMediaCategory\":\""+post.SpecificContent.ShareMediaCategory+"\"" +
                         "}" +
                     "}," +
                     "\"visibility\":{" +
-                        "\"com.linkedin.ugc.MemberNetworkVisibility\":\""+visibility+"\"" +
+                        "\"com.linkedin.ugc.MemberNetworkVisibility\":\""+post.Visibility+"\"" +
                     "}" +
                 "}", 
                 serializer.Serialize(post));

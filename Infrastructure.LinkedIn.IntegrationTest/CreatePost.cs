@@ -13,23 +13,20 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     {
         private readonly LinkedInSettings _linkedInSettings;
         private readonly PostJsonSerializationService _serializationService;
+        private readonly PostFactory _factory;
 
         public CreatePost()
         {
             _linkedInSettings = LinkedInSettings.Create();
             _serializationService = new PostJsonSerializationService();
+            _factory = new PostFactory();
         }
         
         [Fact(Skip = "Can only be run manually"), Priority(-8)]
         public async Task Should_CreatePost_When_SubmittingValidPost()
         {
             const string postText = "This is a test post from the publate.com API project";
-            var post = new Post(
-                LinkedInSettings.GetMeId(),
-                new ContentState(ContentState.LifecycleState.Published),
-                new ShareContent(new Message(postText), new MediaType(MediaType.Type.None)),
-                new Visibility(Visibility.Reach.Public)
-            );
+            var post = _factory.CreatePublicPublishedTextPost(LinkedInSettings.GetMeId(), postText);
             
             var postCreated = await CreateLinkedInPost(post);
             Assert.NotEmpty(postCreated.id);
@@ -40,14 +37,8 @@ namespace Infrastructure.LinkedIn.IntegrationTest
         {
             var toLongPostText = new string('*', _linkedInSettings.CharacterLimitOnPosts + 1);
             
-            var post = new Post(
-                LinkedInSettings.GetMeId(),
-                new ContentState(ContentState.LifecycleState.Published),
-                new ShareContent(new Message(toLongPostText), new MediaType(MediaType.Type.None)),
-                new Visibility(Visibility.Reach.Public)
-            );
+            var post = _factory.CreatePublicPublishedTextPost(LinkedInSettings.GetMeId(), toLongPostText);
 
-            var json = _serializationService.Serialize(post);
             var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await CreateLinkedInPost(post));
             Assert.Contains("exceeded the maximum allowed", exception.Message);
         }
