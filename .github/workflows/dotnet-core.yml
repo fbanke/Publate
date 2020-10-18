@@ -23,3 +23,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+
+    - name: Publish to Registry
+    - uses: kciter/aws-ecr-action@master
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        repo: ${{ secrets.ECR_REPO }}
+        region: eu-west-1
+        tags: latest,${{ github.GITHUB_RUN_NUMBER }}
