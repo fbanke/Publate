@@ -3,7 +3,6 @@ WORKDIR /src
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk AS build
-ARG Version
 COPY Api/Api.csproj Api/
 COPY Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj Infrastructure.LinkedIn/
 
@@ -13,7 +12,7 @@ RUN dotnet restore Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj
 WORKDIR /src
 COPY . .
 
-RUN dotnet build Api/Api.csproj -c Release /p:Version=$Version -o app
+RUN dotnet build Api/Api.csproj -c Release -o app
 RUN dotnet build Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj -c Release -o app
 
 FROM build AS publish
