@@ -20,7 +20,7 @@ FROM build AS publish
 ARG Version
 
 RUN dotnet publish Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj -c Release -o /src/app
-RUN dotnet publish Api/Api.csproj -c Release /p:Version=$Version -o /src/app
+RUN dotnet publish Api/Api.csproj -c Release -o /src/app
 
 FROM base AS final
 WORKDIR /src
