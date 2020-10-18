@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.LinkedIn", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.LinkedIn.UnitTest", "Infrastructure.LinkedIn.UnitTest\Infrastructure.LinkedIn.UnitTest.csproj", "{853FAE29-525B-462F-ADB1-07B0570DD0D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.IntegrationTest", "Api.IntegrationTest\Api.IntegrationTest.csproj", "{1E23B3A9-1CBA-4619-9BB5-0F1EC631F8C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{853FAE29-525B-462F-ADB1-07B0570DD0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{853FAE29-525B-462F-ADB1-07B0570DD0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{853FAE29-525B-462F-ADB1-07B0570DD0D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E23B3A9-1CBA-4619-9BB5-0F1EC631F8C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E23B3A9-1CBA-4619-9BB5-0F1EC631F8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E23B3A9-1CBA-4619-9BB5-0F1EC631F8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E23B3A9-1CBA-4619-9BB5-0F1EC631F8C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
