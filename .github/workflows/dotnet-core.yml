@@ -32,4 +32,4 @@ jobs:
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         repo: ${{ secrets.ECR_REPO }}
         region: eu-west-1
-        tags: latest,${{ github.GITHUB_RUN_NUMBER }}
+        tags: latest,${{ github.run_number }}
