@@ -16,7 +16,6 @@ RUN dotnet build Api/Api.csproj -c Release -o app
 RUN dotnet build Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj -c Release -o app
 
 FROM build AS publish
-ARG Version
 
 RUN dotnet publish Infrastructure.LinkedIn/Infrastructure.LinkedIn.csproj -c Release -o /src/app
 RUN dotnet publish Api/Api.csproj -c Release -o /src/app
