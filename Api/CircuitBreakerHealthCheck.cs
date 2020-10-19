@@ -7,15 +7,15 @@ namespace Api
     public class CircuitBreakerHealthCheck : IHealthCheck
     {
         public static bool Healthy { get; set; } = true;
-        public async Task<HealthCheckResult> CheckHealthAsync(
+        public Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context, CancellationToken cancellationToken)
         {
             if(Healthy)
             {
-                return HealthCheckResult.Healthy();
+                return Task.FromResult(HealthCheckResult.Healthy());
             }
             
-            return HealthCheckResult.Unhealthy();
+            return Task.FromResult(HealthCheckResult.Unhealthy());
         }
     }
 }
