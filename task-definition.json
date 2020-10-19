@@ -1,16 +1,18 @@
-﻿[
-  {
-    "essential": true,
-    "memory": 256,
-    "name": "api",
-    "cpu": 1,
-    "environment": [],
-    "portMappings": [
-      {
-        "hostPort": 80,
-        "protocol": "tcp",
-        "containerPort": 80
-      }
-    ]
-  }
-]
+﻿{
+  "containerDefinitions": [
+    {
+      "essential": true,
+      "memory": 256,
+      "name": "api",
+      "cpu": 1,
+      "environment": [],
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ]
+    }
+  ]
+}
