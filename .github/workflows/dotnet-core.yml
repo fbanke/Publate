@@ -36,11 +36,11 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build \
-        --build-arg Auth0__ManagementApiClientSecret=$AUTH0__MANAGEMENTAPICLIENTSECRET \
-        --build-arg Auth0__ManagementApiClientId=$AUTH0__MANAGEMENTAPICLIENTID \
-        --build-arg Auth0__Domain=$AUTH0__DOMAIN \
-        --build-arg Auth0__ClientSecret=$AUTH0__CLIENTSECRET \
-        --build-arg Auth0__ClientId=$AUTH0__CLIENTID \
+        --build-arg Auth0__ManagementApiClientSecret=${{ secrets.AUTH0__MANAGEMENTAPICLIENTSECRET }} \
+        --build-arg Auth0__ManagementApiClientId=${{ secrets.AUTH0__MANAGEMENTAPICLIENTID }} \
+        --build-arg Auth0__Domain=${{ secrets.AUTH0__DOMAIN }} \
+        --build-arg Auth0__ClientSecret=${{ secrets.AUTH0__CLIENTSECRET }} \
+        --build-arg Auth0__ClientId=${{ secrets.AUTH0__CLIENTID }} \
         -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
