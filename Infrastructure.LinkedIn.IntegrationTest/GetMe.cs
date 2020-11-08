@@ -8,11 +8,11 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
     public class GetMe
     {
-        private readonly LinkedInSettings _linkedInSettings;
+        private readonly TokenRepository _tokenRepository;
 
         public GetMe()
         {
-            _linkedInSettings = LinkedInSettings.Create();
+            _tokenRepository = new TokenRepository();
         }
         
         [Fact(Skip = "Can only be run manually"), Priority(-9)]
@@ -22,12 +22,12 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             
             Assert.NotEmpty(me.id);
             var meId = new Urn("li", "person", me.id);
-            await LinkedInSettings.SaveMeId(meId);
+            await _tokenRepository.SaveMeId(meId);
         }
         
         private async Task<Me> RequestMeDataFromLinkedIn()
         {
-            var client = _linkedInSettings.CreateApiClient();
+            var client = _tokenRepository.CreateApiClient();
             var response = await client.GetAsync("/v2/me");
             
             var meJson = await response.Content.ReadAsStringAsync();

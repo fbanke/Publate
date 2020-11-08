@@ -2,10 +2,12 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
   pull_request:
-    branches: [ master ]
-
+    branches: 
+      - master
+      
 jobs:
   build:
 
@@ -32,7 +34,13 @@ jobs:
         ECR_REPOSITORY: api
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build \
+        --build-arg Auth0__ManagementApiClientSecret=${{ secrets.AUTH0__MANAGEMENTAPICLIENTSECRET }} \
+        --build-arg Auth0__ManagementApiClientId=${{ secrets.AUTH0__MANAGEMENTAPICLIENTID }} \
+        --build-arg Auth0__Domain=${{ secrets.AUTH0__DOMAIN }} \
+        --build-arg Auth0__ClientSecret=${{ secrets.AUTH0__CLIENTSECRET }} \
+        --build-arg Auth0__ClientId=${{ secrets.AUTH0__CLIENTID }} \
+        -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 

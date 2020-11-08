@@ -1,15 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
-      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
-      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
-      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1" />
-    </ItemGroup>
-
-
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>1dfbf644-ac76-4986-bf3f-aca28e4d6a9a</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.LinkedIn\Infrastructure.LinkedIn.csproj" />
+    <ProjectReference Include="..\Infrastructure.Auth0\Infrastructure.Auth0.csproj" />
+  </ItemGroup>
 </Project>
