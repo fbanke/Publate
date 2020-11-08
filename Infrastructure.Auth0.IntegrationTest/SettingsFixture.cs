@@ -6,7 +6,8 @@
         
         public SettingsFixture()
         {
-            Settings = Settings.Create();
+            var factory = new SettingsFactory();
+            Settings = factory.Create();
         }
     }
 }

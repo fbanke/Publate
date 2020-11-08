@@ -17,4 +17,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.Auth0\Infrastructure.Auth0.csproj" />
+  </ItemGroup>
 </Project>

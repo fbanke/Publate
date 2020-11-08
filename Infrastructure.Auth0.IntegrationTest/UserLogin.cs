@@ -24,7 +24,7 @@ namespace Infrastructure.Auth0.IntegrationTest
         }
         
         [Fact(Skip = "Can only be run manually, interactive test")]
-        public void Should_GetAuth0OauthIdToken_When_UserLoginInteractively()
+        public void Should_GetOauthIdToken_When_UserLoginInteractively()
         {
             var nonce = GenerateNonce();
             var interactiveUserLoginWaiter = new AutoResetEvent(false);
@@ -40,7 +40,9 @@ namespace Infrastructure.Auth0.IntegrationTest
             
             var idToken = ParseIdToken(oAuthIdTokenStore);
 
-            Assert.Equal(GetClaimsValue(idToken, "nonce"), nonce);
+            Assert.Equal(nonce, GetClaimsValue(idToken, "nonce"));
+            Assert.Single(idToken.Audiences);
+            Assert.Equal(_settings.ClientId, idToken.Audiences.First());
             
             webServerCancellationToken.Cancel();
         }

@@ -11,13 +11,17 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
     public class CreatePost
     {
-        private readonly LinkedInSettings _linkedInSettings;
+        private readonly Settings _settings;
         private readonly PostJsonSerializationService _serializationService;
         private readonly PostFactory _factory;
+        private readonly TokenRepository _tokenRepository;
 
         public CreatePost()
         {
-            _linkedInSettings = LinkedInSettings.Create();
+            var settingsFactory = new SettingsFactory();
+            _tokenRepository = new TokenRepository();
+            _settings = settingsFactory.Create();
+
             _serializationService = new PostJsonSerializationService();
             _factory = new PostFactory();
         }
@@ -26,7 +30,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
         public async Task Should_CreatePost_When_SubmittingValidPost()
         {
             const string postText = "This is a test post from the publate.com API project";
-            var post = _factory.CreatePublicPublishedTextPost(LinkedInSettings.GetMeId(), postText);
+            var post = _factory.CreatePublicPublishedTextPost(_tokenRepository.GetMeId(), postText);
             
             var postCreated = await CreateLinkedInPost(post);
             Assert.NotEmpty(postCreated.id);
@@ -35,9 +39,9 @@ namespace Infrastructure.LinkedIn.IntegrationTest
         [Fact(Skip = "Can only be run manually"), Priority(-8)]
         public async Task Should_GiveThrowException_When_PostingToLargeMessage()
         {
-            var toLongPostText = new string('*', _linkedInSettings.CharacterLimitOnPosts + 1);
+            var toLongPostText = new string('*', _settings.CharacterLimitOnPosts + 1);
             
-            var post = _factory.CreatePublicPublishedTextPost(LinkedInSettings.GetMeId(), toLongPostText);
+            var post = _factory.CreatePublicPublishedTextPost(_tokenRepository.GetMeId(), toLongPostText);
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await CreateLinkedInPost(post));
             Assert.Contains("exceeded the maximum allowed", exception.Message);
@@ -45,7 +49,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
         
         private async Task<PostCreateResponse> CreateLinkedInPost(Post post)
         {
-            var client = _linkedInSettings.CreateApiClient();
+            var client = _tokenRepository.CreateApiClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "/v2/ugcPosts")
             {
                 Content = new StringContent(_serializationService.Serialize(post))

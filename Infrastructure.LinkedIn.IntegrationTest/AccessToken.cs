@@ -17,11 +17,14 @@ namespace Infrastructure.LinkedIn.IntegrationTest
     [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
     public class AccessToken
     {
-        private readonly LinkedInSettings _linkedInSettings;
+        private readonly Settings _settings;
+        private readonly TokenRepository _tokenRepository;
 
         public AccessToken()
         {
-            _linkedInSettings = LinkedInSettings.Create();
+            var settingsFactory = new SettingsFactory();
+            _tokenRepository = new TokenRepository();
+            _settings = settingsFactory.Create();
         }
         
         [Fact(Skip = "Can only be run manually"), Priority(-10)]
@@ -33,7 +36,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
 
             var webServerCancellationToken = StartWebServerForCallbackRequestInBackground(oAuthCodeStore);
 
-            OpenUrlInBrowser(_linkedInSettings.LinkedInAuthUrl);
+            OpenUrlInBrowser(_settings.LinkedInAuthUrl);
 
             interactiveUserLoginWaiter.WaitOne();
             
@@ -43,7 +46,7 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             Assert.True(linkedInToken.expires_in > thirtyDaysInSeconds, 
                 "We expect the expire time of the access token to be more than 30 days");
             
-            await _linkedInSettings.SaveAccessToken(linkedInToken.access_token);
+            await _tokenRepository.SaveAccessToken(linkedInToken.access_token);
             
             webServerCancellationToken.Cancel();
         }
@@ -60,9 +63,9 @@ namespace Infrastructure.LinkedIn.IntegrationTest
             {
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code", linkedInOauthCode),
-                new KeyValuePair<string, string>("redirect_uri", _linkedInSettings.CallbackUrl),
-                new KeyValuePair<string, string>("client_id", _linkedInSettings.ClientId),
-                new KeyValuePair<string, string>("client_secret", _linkedInSettings.ClientSecret)
+                new KeyValuePair<string, string>("redirect_uri", _settings.CallbackUrl),
+                new KeyValuePair<string, string>("client_id", _settings.ClientId),
+                new KeyValuePair<string, string>("client_secret", _settings.ClientSecret)
             };
 
             request.Content = new FormUrlEncodedContent(formData);

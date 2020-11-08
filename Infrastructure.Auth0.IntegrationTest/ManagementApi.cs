@@ -12,10 +12,12 @@ namespace Infrastructure.Auth0.IntegrationTest
     public class ManagementApi : IClassFixture<SettingsFixture>
     {
         private readonly Settings _settings;
+        private readonly Client _client;
         
         public ManagementApi(SettingsFixture settings)
         {
             _settings = settings.Settings;
+            _client = new Client(_settings);
         }
         
         [Fact, Priority(1)]
@@ -52,7 +54,7 @@ namespace Infrastructure.Auth0.IntegrationTest
         public async Task Should_FindUserProfile_When_GivenValidAccessTokenAndUserId()
         {
             const string userId = "linkedin%7CbPFi4OB_eh";
-            var client = _settings.CreateApiClient();
+            var client = _client.Create();
             var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v2/users/{userId}");
 
             var response = await client.SendAsync(request);
