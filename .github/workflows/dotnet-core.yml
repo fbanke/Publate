@@ -4,7 +4,6 @@ on:
   push:
     branches: 
       - master
-      - auth0-learning
   pull_request:
     branches: 
       - master
