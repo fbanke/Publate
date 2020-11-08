@@ -2,10 +2,13 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
+      - auth0-learning
   pull_request:
-    branches: [ master ]
-
+    branches: 
+      - master
+      
 jobs:
   build:
 
