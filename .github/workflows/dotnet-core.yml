@@ -45,7 +45,6 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Add reference to secrets to Task Definition
-      uses: actions/checkout@v2
       run: |
         sed -i "s/<REGION>/$REGION/g" task-definition.json 
         sed -i "s/<ACCOUNT_ID>/$ACCOUNT_ID/g" task-definition.json
