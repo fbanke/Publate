@@ -12,6 +12,28 @@
           "protocol": "tcp",
           "containerPort": 80
         }
+      ],
+      "secrets": [
+        {
+          "name": "Auth0__ManagementApiClientId",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/Auth0__ManagementApiClientId"
+        },
+        {
+          "name": "Auth0__ManagementApiClientSecret",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/Auth0__ManagementApiClientSecret"
+        },
+        {
+          "name": "Auth0__Domain",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/Auth0__Domain"
+        },
+        {
+          "name": "Auth0__ClientId",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/Auth0__ClientId"
+        },
+        {
+          "name": "Auth0__ClientSecret",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/Auth0__ClientSecret"
+        }
       ]
     }
   ],
