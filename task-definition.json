@@ -13,6 +13,7 @@
           "containerPort": 80
         }
       ],
+      "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
       "secrets": [
         {
           "name": "Auth0__ManagementApiClientId",
