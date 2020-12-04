@@ -74,6 +74,10 @@ namespace Api
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 // c.IncludeXmlComments(xmlPath);
             });
+            
+            services.AddHttpContextAccessor();
+            services.AddTransient<IIdentityService, IdentityService>();
+
         }
 
         protected virtual void ConfigureAuthentication(IServiceCollection services)
