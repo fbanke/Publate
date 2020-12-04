@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -27,7 +28,11 @@ namespace Api
             services.AddHealthChecks()
                 .AddCheck<CircuitBreakerHealthCheck>("circuit_breaker");
 
-            services.AddControllers();
+            // AddControllers only register controllers in the same assembly as it is running from.
+            // when running from the integration test it will try to registers controllers from that assembly
+            // AddApplicationPart fixes it, it can reference any class in the Api project
+            services.AddControllers()
+                .AddApplicationPart(typeof(UsersController).Assembly);
 
             ConfigureAuthentication(services);
             
@@ -71,7 +76,7 @@ namespace Api
             });
         }
 
-        private void ConfigureAuthentication(IServiceCollection services)
+        protected virtual void ConfigureAuthentication(IServiceCollection services)
         {
             var auth0 = Configuration
                 .GetSection("Auth0")
