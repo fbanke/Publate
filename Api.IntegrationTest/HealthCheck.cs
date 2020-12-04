@@ -12,7 +12,7 @@ namespace Api.IntegrationTest
         {
             CircuitBreakerHealthCheck.Healthy = true;
             
-            using var webApplicationFactory = new CustomWebApplicationFactory();
+            using var webApplicationFactory = new IntegrationTestWebApplicationFactory();
             var response = await webApplicationFactory.CreateClient().GetAsync(Url);
             
             Assert.True(response.IsSuccessStatusCode);
@@ -24,7 +24,7 @@ namespace Api.IntegrationTest
         {
             CircuitBreakerHealthCheck.Healthy = false;
             
-            using var webApplicationFactory = new CustomWebApplicationFactory();
+            using var webApplicationFactory = new IntegrationTestWebApplicationFactory();
             var response = await webApplicationFactory.CreateClient().GetAsync(Url);
             
             Assert.False(response.IsSuccessStatusCode);

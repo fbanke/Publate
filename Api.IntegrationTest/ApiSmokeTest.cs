@@ -8,7 +8,7 @@ namespace Api.IntegrationTest
         [Fact]
         public async Task TestThat_SwaggerApiDocumentationUrl_ReturnsSuccess()
         {
-            using var webApplicationFactory = new CustomWebApplicationFactory();
+            using var webApplicationFactory = new IntegrationTestWebApplicationFactory();
             const string url = "/swagger/v1/swagger.json";
             var response = await webApplicationFactory.CreateClient().GetAsync(url);
             
